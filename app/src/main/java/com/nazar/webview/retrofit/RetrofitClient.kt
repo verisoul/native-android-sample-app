@@ -9,9 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val MainServer = "https://eskillz.info/api/leaderboard/"
-    
-    const val ImageMainServer = "http://api.drfriday.in/";
+    const val MainServer = "https://api.prod.verisoul.xyz/"
 
     val retrofitClient: Retrofit.Builder by lazy {
 
