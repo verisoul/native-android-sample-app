@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.usertracking'
+    namespace 'com.verisoul.sampleapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.usertracking"
+        applicationId "com.example.sampleapp"
         minSdk 24
         targetSdk 33
         versionCode 1
