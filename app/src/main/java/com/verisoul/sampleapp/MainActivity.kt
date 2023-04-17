@@ -52,10 +52,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 response = client.newCall(request).execute()
                 val resStr = response.body?.string()
-                resStr?.let {
-                    val accountId = JSONObject(it).getString("account_id")
-                    print(accountId)
-                }
+                print(resStr)
 
             } catch (e: IOException) {
                 e.printStackTrace()

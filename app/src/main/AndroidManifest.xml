@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Usertracking"
         tools:targetApi="31">
         <activity
-            android:name="com.example.sampleapp.MainActivity"
+            android:name="com.verisoul.sampleapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
