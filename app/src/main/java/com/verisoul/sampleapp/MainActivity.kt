@@ -19,27 +19,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val env : String = "sandbox" // or prod
+        val projectId : String = "yourVerisoulProjectId" // or prod projectId
+
         val mWebView = findViewById<WebView>(R.id.webview)
         mWebView.settings.javaScriptEnabled = true
         mWebView.addJavascriptInterface(JSBridge(this),"JSBridge")
-        mWebView.loadUrl("https://webview.dev.verisoul.xyz/?projectId=1234")
+        mWebView.loadUrl("https://webview.$env.verisoul.xyz/?projectId=$projectId")
     }
 
     class JSBridge(private val context: Context){
         @JavascriptInterface
         fun showMessageInNative(message: String) {
+            val apiKey : String = "yourVerisoulApiKey"
             val messageJSON = JSONObject(message)
             Toast.makeText(context, messageJSON.getString("tracking_id"), Toast.LENGTH_LONG).show()
 
             val json = JSONObject()
-            json.put("trackingId", messageJSON.getString("tracking_id"))
-            json.put("accountId", "randomString")
+            json.put("tracking_id", messageJSON.getString("tracking_id"))
+            json.put("account_id", "yourInternalAccountIdentifier")
 
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val body = json.toString().toRequestBody(mediaType)
             val request = Request.Builder()
-                .url("https://api.prod.verisoul.xyz/predict")
-                .addHeader("x-api-key", "8Ldtkg35pX5YoHu2N3qq89faV6fKvakh1zk7Ps5c")
+                .url("https://api.sandbox.verisoul.xyz/predict")
+                .addHeader("x-api-key", apiKey)
                 .post(body)
                 .build()
 
@@ -49,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 response = client.newCall(request).execute()
                 val resStr = response.body?.string()
                 resStr?.let {
-                    val accountId = JSONObject(it).getString("accountId")
+                    val accountId = JSONObject(it).getString("account_id")
                     print(accountId)
                 }
 
