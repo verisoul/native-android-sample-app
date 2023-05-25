@@ -30,19 +30,19 @@ class MainActivity : AppCompatActivity() {
 
     class JSBridge(private val context: Context){
         @JavascriptInterface
-        fun showMessageInNative(message: String) {
+        fun verisoulMessageHandler(message: String) {
             val apiKey : String = "yourVerisoulApiKey"
             val messageJSON = JSONObject(message)
             Toast.makeText(context, messageJSON.getString("tracking_id"), Toast.LENGTH_LONG).show()
 
             val json = JSONObject()
             json.put("tracking_id", messageJSON.getString("tracking_id"))
-            json.put("account_id", "yourInternalAccountIdentifier")
+            json.put("auth_id", "yourInternalAccountIdentifier")
 
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val body = json.toString().toRequestBody(mediaType)
             val request = Request.Builder()
-                .url("https://api.sandbox.verisoul.xyz/predict")
+                .url("https://api.sandbox.verisoul.xyz/zerofake/predict")
                 .addHeader("x-api-key", apiKey)
                 .post(body)
                 .build()
