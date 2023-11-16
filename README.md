@@ -2,11 +2,11 @@
 
 ## Overview
 
-This repo provides a working example of integrating Verisoul's ZeroFake webview into an Android
+This repo provides a working example of integrating Verisoul's WebView into an Android
 native app
 
-The app opens the hidden webview and loads the Verisoul ZeroFake web page. The app then listens for a
-secure `tracking_id` from the webview and makes an API call to the Verisoul API to retrieve the account prediction. _The
+The app opens the hidden webview and loads the Verisoul webview. The app then listens for a
+secure `session_id` from the webview and makes an API call to the Verisoul API to retrieve the account prediction. _The
 API call is included as an example but in production this should be done on your backend._
 
 To run the app a Verisoul API Key is required. Schedule a call [here](https://meetings.hubspot.com/henry-legard) to get started.
