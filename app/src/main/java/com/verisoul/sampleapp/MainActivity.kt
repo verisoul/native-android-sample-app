@@ -3,6 +3,7 @@ package com.verisoul.sampleapp
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
@@ -14,35 +15,42 @@ import okhttp3.Response
 import okio.IOException
 import org.json.JSONObject
 
+val env = "sandbox" // or prod
+val projectId = "<YOUR PROJECT_ID HERE>" // or prod projectId
+val apiKey = "<YOUR API KEY HERE>"
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val env : String = "sandbox" // or prod
-        val projectId : String = "yourVerisoulProjectId" // or prod projectId
-
         val mWebView = findViewById<WebView>(R.id.webview)
         mWebView.settings.javaScriptEnabled = true
-        mWebView.addJavascriptInterface(JSBridge(this),"JSBridge")
-        mWebView.loadUrl("https://webview.$env.verisoul.xyz/?projectId=$projectId")
+        mWebView.settings.domStorageEnabled = true // Enable DOM storage API
+
+        mWebView.addJavascriptInterface(JSBridge(this), "JSBridge")
+        mWebView.loadUrl("https://js.verisoul.ai/$env/webview.html?project_id=$projectId")
     }
 
-    class JSBridge(private val context: Context){
+    class JSBridge(private val context: Context) {
         @JavascriptInterface
-        fun verisoulMessageHandler(message: String) {
-            val apiKey : String = "yourVerisoulApiKey"
+        fun verisoulHandler(message: String) {
             val messageJSON = JSONObject(message)
-            Toast.makeText(context, messageJSON.getString("tracking_id"), Toast.LENGTH_LONG).show()
+            print(messageJSON)
+            Toast.makeText(context, messageJSON.getString("session_id"), Toast.LENGTH_LONG).show()
 
-            val json = JSONObject()
-            json.put("tracking_id", messageJSON.getString("tracking_id"))
-            json.put("auth_id", "yourInternalAccountIdentifier")
+            val json = JSONObject().apply {
+                put("session_id", messageJSON.getString("session_id"))
+                val accountJson = JSONObject().apply {
+                    put("id", "internal-customer-identifier")
+                }
+                put("account", accountJson)
+            }
 
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val body = json.toString().toRequestBody(mediaType)
             val request = Request.Builder()
-                .url("https://api.sandbox.verisoul.xyz/zerofake/predict")
+                .url("https://api.$env.verisoul.ai/session/authenticate")
                 .addHeader("x-api-key", apiKey)
                 .post(body)
                 .build()
@@ -52,7 +60,9 @@ class MainActivity : AppCompatActivity() {
             try {
                 response = client.newCall(request).execute()
                 val resStr = response.body?.string()
-                print(resStr)
+                if (resStr != null) {
+                    Log.d("Response", resStr)
+                }
 
             } catch (e: IOException) {
                 e.printStackTrace()
